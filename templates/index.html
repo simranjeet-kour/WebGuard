@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>WebGuard - OWASP Web Security Scanner</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>🛡 WebGuard</h1>
+
+        <p>OWASP Web Security Scanner</p>
+
+    </div>
+
+    <form method="POST">
+
+        <label>Website URL</label>
+
+        <input
+            type="text"
+            name="url"
+            value="{{ url }}"
+            placeholder="https://example.com"
+            required>
+
+        <button type="submit">
+            🔍 Scan Website
+        </button>
+
+    </form>
+
+{% if result %}
+
+{% if result.error %}
+
+<div class="error">
+
+<h2>{{ result.error }}</h2>
+
+</div>
+
+{% else %}
+
+<hr>
+
+<div class="cards">
+
+<div class="card">
+
+<h3>🌐 Website</h3>
+
+<h2>{{ result.domain }}</h2>
+
+</div>
+
+<div class="card">
+
+<h3>📊 Security Score</h3>
+
+<h2 class="{{ result.color }}">
+{{ result.score }}/100
+</h2>
+
+<p>{{ result.level }}</p>
+
+</div>
+
+<div class="card">
+
+<h3>🔒 HTTPS</h3>
+
+<h2>{{ result.https }}</h2>
+
+</div>
+
+<div class="card">
+
+<h3>🖥 Server</h3>
+
+<h2>{{ result.server }}</h2>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>🛡 Security Headers</h2>
+
+<table>
+
+<tr>
+
+<th>Header</th>
+
+<th>Status</th>
+
+</tr>
+
+{% for header, value in result.headers.items() %}
+
+<tr>
+
+<td>{{ header }}</td>
+
+<td>{{ value }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+<div class="section">
+
+<h2>🍪 Cookie Security</h2>
+
+<table>
+
+<tr>
+
+<th>Property</th>
+
+<th>Status</th>
+
+</tr>
+
+<tr>
+
+<td>Secure Cookie</td>
+
+<td>{{ result.secure_cookie }}</td>
+
+</tr>
+
+<tr>
+
+<td>HttpOnly</td>
+
+<td>{{ result.httponly_cookie }}</td>
+
+</tr>
+
+<tr>
+
+<td>SameSite</td>
+
+<td>{{ result.samesite_cookie }}</td>
+
+</tr>
+
+</table>
+
+</div>
+
+<div class="section">
+
+<h2>📡 Allowed HTTP Methods</h2>
+
+<p>{{ result.methods }}</p>
+
+</div>
+
+<div class="section">
+
+<h2>💡 Security Recommendations</h2>
+
+<ul>
+
+{% for item in result.recommendations %}
+
+<li>{{ item }}</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+<form action="/download" method="POST">
+
+<input
+type="hidden"
+name="url"
+value="{{ url }}">
+
+<button class="download-btn">
+
+📄 Download Security Report
+
+</button>
+
+</form>
+
+{% endif %}
+
+{% endif %}
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>
